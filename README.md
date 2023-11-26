@@ -31,6 +31,6 @@ Please complete the [onboarding tutorial](tutorials/onboarding.md) for the next 
 | 19.12 | Database per microservices, API composition, Data mesh, Refactor a monolithic database, CQRS and Materialize views, Data consistency                                                 | Statefulset and Storage                                                                          | 
 | 24.12 | Externalized configuration, Services resiliency                                                                                                                                      | Helm, cluster observability                                                                      | 
 | 26.12 | 12 Factor app, Service discovery, Event Sourcing                                                                                                                                     | Cluster networking and security                                                                  | 
-| 28.12 | Final project exam                                                                                                                                                                   |                                                                                                  | 
+| 28.12 | Deployment strategies, Final project exam                                                                                                                                            | GitOps                                                                                           | 
 
 
