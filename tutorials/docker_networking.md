@@ -96,10 +96,6 @@ The `EXPOSE` instruction **does not** actually publish the port.
 It functions as a type of documentation between the person who builds the image and the person who runs the container, about which ports are intended to be published. 
 To actually publish the port when running the container, use the `-p` flag on docker run to publish and map one or more ports.
 
-# Self-check questions
-
-[Enter the interactive self-check page](https://alonitac.github.io/__REPO_NAME__/multichoice-questions/docker_networking.html)
-
 
 # Exercises
 

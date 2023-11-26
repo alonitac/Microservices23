@@ -211,10 +211,6 @@ docker run hello-world
 The hello-world image is an example of minimal containerization with Docker.
 It has a single `hello.c` file responsible for printing out the message you're seeing on your terminal.
 
-# Self-check questions
-
-[Enter the interactive self-check page](https://alonitac.github.io/__REPO_NAME__/multichoice-questions/docker_intro.html)
-
 
 # Exercises
 

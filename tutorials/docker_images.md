@@ -370,10 +370,6 @@ Instead of working hard to clean and minimize our original image, we are startin
 At the end, Docker discards any intermediate build and keep only the final stage image.
 By using multi-stage builds, we can take advantage of the build stage to compile and build the application, and then copy only the necessary artifacts into the final stage, resulting in a smaller and more optimized Docker image.
 
-# Self-check questions
-
-[Enter the interactive self-check page](https://alonitac.github.io/__REPO_NAME__/multichoice-questions/docker_images.html)
-
 # Exercises
 
 ###  TBD question 

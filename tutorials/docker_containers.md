@@ -331,21 +331,8 @@ Under the `/var/lib/docker/containers` directory, you will find subdirectories c
 6. `networks/`: This directory stores information about the container's network interfaces, such as IP addresses, network settings, and more (will be discussed in further modules).
 7. `*.log`: Depending on your container's logging configuration, you may find log files in this directory. By default, Docker uses the JSON-file logging driver, and log files are stored in `/var/lib/docker/containers/<container_id>/<container_id>.log`.
 
-# Self-check questions
-
-[Enter the interactive self-check page](https://alonitac.github.io/__REPO_NAME__/multichoice-questions/docker_containers.html)
-
 
 # Exercises
-
-### :pencil2: Communication between containers and the internet
-
-Run two [`ubuntu`](https://hub.docker.com/_/ubuntu) containers named `ubuntu1` and `ubuntu2`.
-Use the `-it` flags to make an interactive interaction with the running containers using a tty terminal.
-
-Your goal is to be able to successfully `ping` the `ubuntu1` container from `ubuntu2`, i.e. to verify communication between the two containers.
-Install ping if needed, `inspect` the containers to discover their IP addresses.
-
 
 ### :pencil2: Availability test service
 

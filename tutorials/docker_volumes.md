@@ -168,10 +168,6 @@ An easy way to visualize the difference among volumes, bind mounts, and tmpfs mo
 - **`tmpfs` mounts** are stored in the host system's memory only, and are never
   written to the host system's filesystem.
 
-# Self-check questions
-
-[Enter the interactive self-check page](https://alonitac.github.io/__REPO_NAME__/multichoice-questions/docker_volumes.html)
-
 # Exercises
 
 ### :pencil2: Understanding user file ownership in docker

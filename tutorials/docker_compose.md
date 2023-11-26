@@ -74,10 +74,6 @@ The official Docker Compose website provides good getting started tutorial with 
 Complete the tutorial:      
 https://docs.docker.com/compose/gettingstarted/
 
-# Self-check questions
-
-[Enter the interactive self-check page](https://alonitac.github.io/__REPO_NAME__/multichoice-questions/docker_compose.html)
-
 
 # Exercises
 
