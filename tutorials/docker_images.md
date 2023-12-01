@@ -372,57 +372,35 @@ By using multi-stage builds, we can take advantage of the build stage to compile
 
 # Exercises
 
-###  TBD question 
+### :pencil2: Build the availability agent
 
-[//]: # (TODO )
+Build the availability agent app located in `availability_agent` (this app used in an exercise in Containers tutorial).
 
-Containerize the availability agents from previous step 
+- Create a `Dockerfile`.
+- Choose a base image according to your app requirements (it's a simple bash app).
+- Copy the source code into the image
+- Set a proper `CMD` to launch the app. 
 
-### :pencil2: Push to DockerHub
+Test your image.
 
-[Create a free account](https://docs.docker.com/docker-id/) in DockerHub
 
-Push the built `my_flask_app:0.0.1` image to your registry.
+### :pencil2: Push the `my_flask_app` image to ECR
 
-### :pencil2: Image build
-
-The "Build with Docker" is a great official tutorial that covers basic topics as image build, as well as advanced topic as multi-stage builds.
-
-Follow it and complete steps 1 (Introduction), 2 (Layers), 3 (Multi-stage):   
-https://docs.docker.com/build/guide/
-
-### :pencil2: Reduce image size using multi-stage builds
-
-In our shared repo, you'll find a simple "Hello World" under `hello_world_go`.
-
-Build an image while the build context is this directory.
-
-Once without utilizing multistage builds:
-
-```dockerfile
-FROM golang:1.17
-WORKDIR /app
-COPY . .
-RUN go build main.go
-ENTRYPOINT ["./main"]
-```
-
-Then build the image as specified in the multi-stage example.
-Compare the image size.
-
-### :pencil2: fix vulnerability scanning
-
-Use the `snyk container test` command to perform vulnerabilities scan to your `my_flask_app` image.
-
-How many issues were found in total? How critical, high, medium, low?
-Follow the **Recommendations for base image upgrade:** section in Snyk's report to build another version of `my_flask_app` image with another base image to mitigate critical and high vulnerabilities.
-
+1. Open the Amazon ECR console at [https://console\.aws\.amazon\.com/ecr/repositories](https://console.aws.amazon.com/ecr/repositories).
+2. In the navigation pane, choose **Repositories**\.
+3. On the **Repositories** page, choose **Create repository**\.
+4. For **Repository name**, enter a unique name for your repository\. E.g. `john_my_flask_app`
+6. Choose **Create repository**\.
+7. Select the repository that you created and choose **View push commands** to view the steps to build and push an image to your new repository\.
 
 ### :pencil2: Build the 2048 game
 
 The 2048 game source code is available in this git repo: https://github.com/gabrielecirulli/2048
 
 Use the `nginx:1.23.3-alpine-slim` base image to pack this game in a docker image.
+
+The 2048 repo files have to be located inside the image under `/usr/share/nginx/html`.
+
 Run a container from the newly built image, and make sure you can play the game:
 
 ```bash
@@ -449,5 +427,3 @@ docker build -t my_flask_app:0.0.1 --build-arg PY_VERSION=3.8.0-slim-buster .
 ```
 
 Will build the app image with a base Python image `python:3.8.0-slim-buster`.
-
-

@@ -104,30 +104,6 @@ docker volume rm my-vol
 - Similarly, if you start a container and specify a volume which does not already exist, an empty volume is created for you. This is a good way to pre-populate data that another container needs.
 - If you mount a **bind mount** or **non-empty volume** into a directory in the container in which some files or directories exist, these files or directories are **obscured by the mount**.
 
-### Read-only volumes 
-
-Sometimes, the container only needs read access to the data, is such way multiple containers can safely mount the same volume without write race condition. 
-You can simultaneously mount a single volume as read-write for some containers and as read-only for others.
-
-The following example mounts the directory as a read-only volume, by adding `ro` to the `-v` flag:
-
-```bash 
-docker run -d \
-  --name=nginxtest \
-  -v nginx-vol:/usr/share/nginx/html:ro \
-  nginx:latest
-```
-
-Other possible options are:
-
-1. `ro` (Read-Only): Mounts the volume in read-only mode, allowing only read operations.
-2. `rw` (Read-Write): Mounts the volume in read-write mode, allowing both read and write operations (the default).
-4. `Z` (Shared): Marks the volume as shared, allowing it to be **safely** shared between multiple containers.
-5. `nocopy` (No Copy): Indicates that the volume should not be copied from the container image but instead be created as an empty volume.
-6. `delegated` (Delegated Copy): Specifies that the volume should be created as an empty volume but be populated with data from the container image on-demand.
-
-Where multiple options are present, you can separate them using commas.
-
 ## `tmpfs` mounts
 
 Volumes and bind mounts let you share files between the host machine and container so that you can persist data even after the container is stopped.
@@ -170,32 +146,7 @@ An easy way to visualize the difference among volumes, bind mounts, and tmpfs mo
 
 # Exercises
 
-### :pencil2: Understanding user file ownership in docker
-
-When running a container, the default user inside the container is often set to the `root` user, and this user has full control of the container's processes.
-Since containers are isolated process in general, we don't really care that `root` is the user operating within the container.
-
-But, when mounting directories from the host machine using the `-v` command, it is important to be cautious when using the root user in a container. Why?
-
-We will investigate this case in this exercise...
-
-1. On your host machine, create a directory under `~/test_docker`.
-2. Run the `ubuntu` container while mounting `/test` within the container, into `~/test_docker` in the host machine:
-
-```bash
-docker run -it -v ~/test_docker:/test ubuntu /bin/bash
-```
-
-3. From your host machine, create a file within `~/test_docker` directory.
-4. From the `ubuntu` container, list the mounted directory (`/test`), can you see the file you've created from your host machine?
-   Who are the UID (user ID) and GID (group ID) owning the file?
-5. From within the container, create a file within `/test`.
-6. List `~/test_docker` from your host machine. Who are user and group owning the file created from the container?
-7. Try to indicate the potential vulnerability: "If an attacker gains control of the container, they may be able to..."
-8. Repeat the above scenario, but instead of using `-v`, use docker volumes. Starts by creating a new volume by: `docker create volume testvol`. Describe how using docker managed volume can reduce the potential risk.
-
-
-## :pencil2: Persist MongoDB database
+### :pencil2: Persist MongoDB database
 
 Your goal is to run MongoDB container persistently.
 Running a Mongodb container persistently means that data stored in the container will be preserved even if the container is stopped or restarted.
@@ -220,12 +171,27 @@ Here is general guidelines:
   3. Verify that the data was successfully survived container kill, by: `db.myCollection.find()`.
   4. You should see the inserted data.
 
-### :pencil2: Investigate volume mounting
 
-Use the `ubuntu` container to experiment with volume mounting and answer the following questions:
+### :pencil2: Understanding user file ownership in docker
 
-1. What happens when you mount an **empty docker volume** into a directory in the container in which files or directories exist?
-2. What happens when you start a container and specify a docker volume name that does not exist?
-3. What happens when you mount a path using **bind mount** of non-empty directory in the container?
-4. What happens when you start a container and specify paths (both in the host machine and the container) that does not exist?
+When running a container, the default user inside the container is often set to the `root` user, and this user has full control of the container's processes.
+Since containers are isolated process in general, we don't really care that `root` is the user operating within the container.
 
+But, when mounting directories from the host machine using the `-v` command, it is important to be cautious when using the root user in a container. Why?
+
+We will investigate this case in this exercise...
+
+1. On your host machine, create a directory under `~/test_docker`.
+2. Run the `ubuntu` container while mounting `/test` within the container, into `~/test_docker` in the host machine:
+
+```bash
+docker run -it -v ~/test_docker:/test ubuntu /bin/bash
+```
+
+3. From your host machine, create a file within `~/test_docker` directory.
+4. From the `ubuntu` container, list the mounted directory (`/test`), can you see the file you've created from your host machine?
+   Who are the UID (user ID) and GID (group ID) owning the file?
+5. From within the container, create a file within `/test`.
+6. List `~/test_docker` from your host machine. Who are user and group owning the file created from the container?
+7. Try to indicate the potential vulnerability: "If an attacker gains control of the container, they may be able to..."
+8. Repeat the above scenario, but instead of using `-v`, use docker volumes. Starts by creating a new volume by: `docker create volume testvol`. Describe how using docker managed volume can reduce the potential risk.

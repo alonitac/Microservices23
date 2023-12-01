@@ -1,7 +1,5 @@
 # Docker Networking
 
-[Docker networking slides](https://alonitac.github.io/DevOpsFeb23/slides/docker_networking.html) 
-
 ## Docker network sandbox and drivers
 
 It's time to face hard questions about container networking. 
@@ -98,26 +96,6 @@ To actually publish the port when running the container, use the `-p` flag on do
 
 
 # Exercises
-
-### :pencil2: Inspecting container networking
-
-Run the `busybox` image by:
-
-```bash
-docker run -it busybox /bin/sh
-```
-
-1. On which network this container is running?
-2. What is the name of the network interface that the container is connected to, as it is seen from the host machine?
-3. What is the name of the network interface that the container is connected to as it is seen from within the container?
-4. What is the IP address of the container?
-5. Using the `route` command, what is the default gateway ip that the container use to access the internet?
-6. Provide an evidence that the container's default gateway IP is the IP address of the default bridge network on the host machine the container is running on.
-7. What are the IP address(es) of the DNS server the container used to resolve hostnames? Provide an evidence that they are identical to the DNS servers host machine.
-8. Create a new bridge network, connect your running container to this network.
-9. Provide an evidence that the container has been connected successfully to the created network.
-10. From the host machine, try to `ping` the container using both its IP addresses.
-11. After you've connected the container to a custom bridge network, what are the IP address of the DNS server the container used to resolve hostnames? What does it mean?
 
 ### :pencil2: Flask, Nginx, MongoDB
 
