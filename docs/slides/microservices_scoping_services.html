@@ -1,0 +1,179 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Microservices - Scoping a Microservice</title>
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+<link rel="stylesheet" href="dist/theme/white.css" id="theme">
+		<!-- Theme used for syntax highlighted code -->
+<link rel="stylesheet" href="plugin/highlight/zenburn.min.css" id="highlight-theme"></head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+<section data-markdown  data-auto-animate><textarea data-template>
+[comment]: # (mdslides presentation.md --include media)
+
+[comment]: # (The list of themes is at https://revealjs.com/themes/)
+[comment]: # (The list of code themes is at https://highlightjs.org/)
+
+[comment]: # (markdown: { smartypants: true })
+
+
+<style type="text/css">
+  .reveal { 
+    font-size: 2.2em;
+  }
+
+  .reveal .code-wrapper code {
+    white-space: pre;
+    font-size: 2em;
+    line-height: 1.2em;
+  }
+</style>
+
+Microservices23
+
+# Microservices - Scoping a Microservice
+
+By Alon Itach
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+Microservices are built around **business capabilities**
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+Each service is owned by a long-lived, small (typically 5-9 people), loosely coupled, autonomous, and cross-functional team.
+
+![](media/k8s_ServicePerTeam.png)
+
+The team can freely develop, test, deploy and scale its services.
+
+They primarily interact with other teams in order to negotiate APIs.
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+How to scop a microservice? 
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Domain Driven Design (DDD)
+
+Let's take the online travel agencies domain as an example - e.g. booking.com
+
+As you try to model such a larger domain, it gets progressively harder to build a single unified model.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Domain Driven Design (DDD)
+
+
+Different groups of people will use subtly different vocabularies in different parts of a large organization.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Domain Driven Design (DDD)
+
+The precision of modeling rapidly runs into this, often leading to a lot of confusion.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Domain Driven Design (DDD)
+
+DDD is about designing software based on models of the underlying domain
+
+![](media/k8s_bounded_context.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Domain Driven Design (DDD)
+
+DDD deals with large models by dividing them into different **Bounded Contexts** and being explicit about their **interrelationships**.
+
+![](media/k8s_bounded_context.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Domain Driven Design (DDD)
+
+Developers and domain experts are building together a rigorous, common language between them, called the **Ubiquitous Language** of the domain.
+
+![](media/k8s_DDD-Diagrams-3.png)
+
+The domain terminology is embedded into the software systems.
+
+The ubiquitous language acts as the conceptual foundation for the design of the software itself - how it's broken down into objects or functions.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Advantages of DDD
+
+- Developers have a rich understanding of the processes and rules of a domain.
+- Enables each team to be autonomous and work with minimal coordination with other teams.
+- Good communication between developers and domain experts.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Drawbacks of DDD
+
+- Teams are not necessarily aligned with end user features
+- Implementing features that span contexts is more complicated and requires teams to collaborate
+
+
+</textarea></section>
+<section data-markdown  data-background-color="aquamarine"><textarea data-template>
+
+# Thanks
+
+References:
+
+- https://microservices.io/patterns/decomposition/service-per-team.html
+- https://martinfowler.com/bliki/DomainDrivenDesign.html
+- https://martinfowler.com/bliki/BoundedContext.html
+- https://martinfowler.com/bliki/UbiquitousLanguage.html
+
+</textarea></section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+Reveal.initialize({
+controls : false,
+markdown : {smartypants: true},
+controls : true,
+keyboard : true,
+hash : false,
+respondToHashChanges : false,
+width : 1500,
+height : 1000,
+				hash: true,
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath ]
+			});
+		</script>
+	</body>
+</html>
