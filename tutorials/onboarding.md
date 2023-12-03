@@ -15,7 +15,7 @@
 6. In the opened Bash terminal, clone our shared GitHub repository with all content and labs:
 
 ```bash 
-git clone https://github.com/alonitac/Microservices23.git .
+git clone https://github.com/alonitac/Microservices23.git
 ```
 
 Throughout the course we will upload new content, you can get it into your environment by pulling the repo from the `~/environment` directory:
