@@ -148,50 +148,8 @@ An easy way to visualize the difference among volumes, bind mounts, and tmpfs mo
 
 ### :pencil2: Persist MongoDB database
 
-Your goal is to run MongoDB container persistently.
-Running a Mongodb container persistently means that data stored in the container will be preserved even if the container is stopped or restarted.
+Your goal is to run MongoDB container from the previous exercise while the data is stored persistently.
 
-You need to store the data in a location outside the container, using either bind-mounts or volumes, to your choice.
+![](../.img/docker_nginx-flask-mongo.png)
 
-Here is general guidelines:
-
-1. Review the [Mongo official image](https://hub.docker.com/_/mongo) in DockerHub. Specifically, read the **Start a mongo server instance** section to get an idea of how to run the Mongo container. Then read the **Where to Store Data** section to see where Mongo stores its data, and think how to persist the data stored in this path.
-2. Run the container with the relevant environment variables and volumes mounting.
-3. Watch the container logs, make sure the database is up and running (search for the `ready for connections` log).
-4. Exec to your running container by: `docker exec -it <container-id-or-name> /bin/bash`:
-  1. Within the container, start a Mongo shell session by: `mongosh`. The `mongosh` terminal session is used for interacting with a Mongo database server from the command line.
-  2. Switch to work against some experimental database: `use mydatabase`
-  3. Write some data by: `db.myCollection.insertOne({ name: "John Doe", age: 30 })`.
-  4. Exit the terminal.
-5. Kill the container: `docker kill <container-id-or-name>`.
-6. Start a new Mongo container, with the same volume mapping.
-7. Exec to your new running container by: `docker exec -it <container-id-or-name> /bin/bash`:
-  1. Within the container, start a Mongo shell: `mongosh`.
-  2. Switch to work against your previous db: `use mydatabase`.
-  3. Verify that the data was successfully survived container kill, by: `db.myCollection.find()`.
-  4. You should see the inserted data.
-
-
-### :pencil2: Understanding user file ownership in docker
-
-When running a container, the default user inside the container is often set to the `root` user, and this user has full control of the container's processes.
-Since containers are isolated process in general, we don't really care that `root` is the user operating within the container.
-
-But, when mounting directories from the host machine using the `-v` command, it is important to be cautious when using the root user in a container. Why?
-
-We will investigate this case in this exercise...
-
-1. On your host machine, create a directory under `~/test_docker`.
-2. Run the `ubuntu` container while mounting `/test` within the container, into `~/test_docker` in the host machine:
-
-```bash
-docker run -it -v ~/test_docker:/test ubuntu /bin/bash
-```
-
-3. From your host machine, create a file within `~/test_docker` directory.
-4. From the `ubuntu` container, list the mounted directory (`/test`), can you see the file you've created from your host machine?
-   Who are the UID (user ID) and GID (group ID) owning the file?
-5. From within the container, create a file within `/test`.
-6. List `~/test_docker` from your host machine. Who are user and group owning the file created from the container?
-7. Try to indicate the potential vulnerability: "If an attacker gains control of the container, they may be able to..."
-8. Repeat the above scenario, but instead of using `-v`, use docker volumes. Starts by creating a new volume by: `docker create volume testvol`. Describe how using docker managed volume can reduce the potential risk.
+Make sure the data is persistent by `docker kill` the container and create a new one.  

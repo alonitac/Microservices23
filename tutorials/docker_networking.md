@@ -94,19 +94,3 @@ The `EXPOSE` instruction **does not** actually publish the port.
 It functions as a type of documentation between the person who builds the image and the person who runs the container, about which ports are intended to be published. 
 To actually publish the port when running the container, use the `-p` flag on docker run to publish and map one or more ports.
 
-
-# Exercises
-
-### :pencil2: Flask, Nginx, MongoDB
-
-Your goal is to build the following architecture:
-
-![](../.img/docker_nginx-flask-mongo.png)
-
-- The Dockerfiles of the nginx and the flask apps can be found in our shared repo under `nginx_flask_mongodb`.
-- The mongo app should be run using the pre-built [official Mongo image](https://hub.docker.com/_/mongo).
-- The nginx and flask app should be connected to a custom bridge network called `public-net-1` network.
-- In addition, the flask app the mongo should be connected to a custom bridge network called `private-net-1` network.
-- The nginx should talk with flask using the `flask-app` hostname.
-- The flask app should talk to the mongo using the `mongo` hostname.
-

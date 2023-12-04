@@ -269,79 +269,6 @@ The [official Alpine Linux](https://hub.docker.com/_/alpine/tags) Docker image i
 
 Built your images only with what you need to run the application. 
 
-## More Dockerfile instructions 
-
-Let's see some other useful instructions: 
-
-### The `ADD` instruction
-
-The [`ADD` instruction](https://docs.docker.com/engine/reference/builder/#add), similarly to `COPY`, copies new files, directories from the host machine to the built image. 
-`ADD` has more advanced functionality that `COPY` doesn't have. 
-
-For example, `ADD` allows `<src>` to be a URL:
-
-```dockerfile
-ADD --checksum=sha256:24454f830cdb571e2c4ad15481119c43b3cafd48dd869a9b2945d1036d1dc68d https://mirrors.edge.kernel.org/pub/linux/kernel/Historic/linux-0.01.tar.gz /
-```
-
-The instruction downloads the file located at the specified URL and add it to the root directory (`/`) of the Docker image.
-The `--checksum` option ensures that the downloaded file's SHA256 checksum matches the specified value before adding it to the image.
-
-### Executable containers - the `ENTRYPOINT` instruction
-
-The [`ENTRYPOINT` instruction](https://docs.docker.com/engine/reference/builder/#entrypoint)) is used to specify the main executable for the container.
-You can optionally provide additional arguments using the `CMD` instructions.
-
-For example, the Nginx official Dockerfile specifies: 
-
-```dockerfile
-FROM debian:11-slim
-
-# ...
-
-ENTRYPOINT ["/docker-entrypoint.sh"]
-CMD ["nginx", "-g", "daemon off;"]
-```
-
-In the above configurations, the executed command when running an nginx container is:
-
-```bash
-/docker-entrypoint.sh nginx -g daemon off;
-```
-
-In such way, `ENTRYPOINT` sets the primary command that cannot be easily overridden, while `CMD` provides default arguments to the `ENTRYPOINT`.
-Since `CMD` can be overridden by the user running the `docker run`, using them together allows for defining a default behavior for the container, while still providing flexibility for customization.
-
-Images built with the `ENTRYPOINT` instruction are commonly referred as **executable containers** that can be run consistently across different environments, ensuring the application runs as intended without the need for manually specifying the command every time the container is started.
-
-That's all for Dockerfile instructions. 
-
-While there are several [instructions available](https://docs.docker.com/engine/reference/builder/) to use within Dockerfiles, it's not necessary to learn every single instruction in detail, as familiarity with the commonly used instructions is sufficient for creating and customizing Docker images.
-
-## Docker image vulnerabilities
-
-Sometimes, docker images can contain security vulnerabilities, either by using vulnerable base image, or install insecure package.
-Docker image security scanning is a process of identifying known security vulnerabilities in the packages listed in your Docker image.
-This gives you the opportunity to find vulnerabilities in container images and fix them before deploying image to production environments.
-
-The [Snyk](https://docs.snyk.io/products/snyk-container/snyk-cli-for-container-security) Container command line interface helps you find and fix vulnerabilities in container images on your local machine.
-
-1. You must first to [Sign up for Snyk account](https://docs.snyk.io/getting-started/create-a-snyk-account).
-2. Install [Snyk CLI](https://docs.snyk.io/snyk-cli/install-the-snyk-cli).
-3. Get your API token from your [Account Settings](https://app.snyk.io/account) page.
-4. Use `sync auth` to authenticate in Snyk API. Alternatively, set the `SNYK_TOKEN` environment variable with the API token as a value.
-5. You can easily [scan docker images](https://docs.snyk.io/products/snyk-container) for vulnerabilities:
-
-```shell
-# will scan ubuntu docker image from DockerHub
-snyk container test ubuntu 
-
-# will alarm for `high` issues and above 
-snyk container test ubuntu --severity-threshold=high
- 
-# will scan a local image my-image:latest. The --file=Dockerfile can add more context to the security scanning. 
-snyk container test my-image:latest --file=Dockerfile
-```
 
 ## Multi-stage builds 
 
@@ -372,24 +299,25 @@ By using multi-stage builds, we can take advantage of the build stage to compile
 
 # Exercises
 
-### :pencil2: Build the availability agent
+### :pencil2: Flask, Nginx, MongoDB
 
-Build the availability agent app located in `availability_agent` (this app used in an exercise in Containers tutorial).
+Your goal is to build the following architecture:
 
-- Create a `Dockerfile`.
-- Choose a base image according to your app requirements (it's a simple bash app).
-- Copy the source code into the image
-- Set a proper `CMD` to launch the app. 
+![](../.img/docker_nginx-flask-mongo.png)
 
-Test your image.
+- The Dockerfiles of the nginx and the flask apps can be found in our shared repo under `nginx_flask_mongodb`.
+- The mongo app should be run using the pre-built [official Mongo image](https://hub.docker.com/_/mongo).
+- The nginx and flask app should be connected to a custom bridge network called `public-net-1` network.
+- In addition, the flask app the mongo should be connected to a custom bridge network called `private-net-1` network.
+- The nginx should talk with flask using the `flask-app` hostname.
+- The flask app should talk to the mongo using the `mongo` hostname.
 
-
-### :pencil2: Push the `my_flask_app` image to ECR
+### :pencil2: Push an image `flask-app` image to ECR
 
 1. Open the Amazon ECR console at [https://console\.aws\.amazon\.com/ecr/repositories](https://console.aws.amazon.com/ecr/repositories).
 2. In the navigation pane, choose **Repositories**\.
 3. On the **Repositories** page, choose **Create repository**\.
-4. For **Repository name**, enter a unique name for your repository\. E.g. `john_my_flask_app`
+4. For **Repository name**, enter a unique name for your repository\. E.g. `john-flask-app`
 6. Choose **Create repository**\.
 7. Select the repository that you created and choose **View push commands** to view the steps to build and push an image to your new repository\.
 
@@ -406,24 +334,3 @@ Run a container from the newly built image, and make sure you can play the game:
 ```bash
 docker run -p 8080:80 my-2048-game
 ```
-
-### :pencil2: Parametrized build
-
-The [ARG instruction](https://docs.docker.com/engine/reference/builder/#arg) in Dockerfile allows you to define variables that users can pass at build-time to customize the build process.
-These variables can be used during the build to define defaults, or pass values into the image at build-time.
-`ARG` variables are not persisted in the final image and are only available during the build process.
-
-Use `ARG` to generalize the build process of the `my_flask_app` image you've built in the last module.
-Allow to specify a dynamic python value in the build command, for example:
-
-```bash
-docker build -t my_flask_app:0.0.1 --build-arg PY_VERSION=3.9.16 .
-```
-
-Will build the app image with a base Python image `python:3.9.16`. Another exmaple:
-
-```bash
-docker build -t my_flask_app:0.0.1 --build-arg PY_VERSION=3.8.0-slim-buster .
-```
-
-Will build the app image with a base Python image `python:3.8.0-slim-buster`.
