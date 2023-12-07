@@ -79,6 +79,13 @@ https://docs.docker.com/compose/gettingstarted/
 
 ### :pencil2: Flask, Nginx, MongoDB
 
+Fetch the update repository files by:
+
+```bash
+cd ~/environment/Microservices23
+git pull
+```
+
 Complete the `nginx_flask_mongodb/docker-compose.yaml` file for the following containers architecture:
 
 ![](../.img/docker_nginx-flask-mongo.png)
