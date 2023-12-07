@@ -84,7 +84,7 @@ Create `docker-compose.yaml` file for the following containers architecture:
 ![](../.img/docker_nginx-flask-mongo.png)
 
 - The Dockerfiles of the nginx and the flask services can be found in our shared repo under `nginx_flask_mongodb`.
-- The mongo service should be run using the pre-built [official Mongo image](https://hub.docker.com/_/mongo). **The database data should be persistent**.
+- The mongo service should be run using the pre-built [official Mongo image](https://hub.docker.com/_/mongo).
 - The nginx and flask services should be connected to a custom bridge network called `public-net-1` network.
 - In addition, the flask service and mongo should be connected to a custom bridge network called `private-net-1` network.
 - The nginx should talk with flask using the `flask-app` hostname.
