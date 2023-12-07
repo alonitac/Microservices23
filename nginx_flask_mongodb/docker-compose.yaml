@@ -1,0 +1,17 @@
+version: "3.9"
+services:
+  mongo:
+    # TODO
+  flask-app:
+    # TODO
+  nginx:
+    image: # TODO - your nginx image name here
+    ports:
+      - "8080:80"
+    depends_on:
+      - flask-app
+    networks:
+      - public-net-1
+networks:
+  public-net-1:
+    driver: bridge

@@ -79,7 +79,7 @@ https://docs.docker.com/compose/gettingstarted/
 
 ### :pencil2: Flask, Nginx, MongoDB
 
-Create `docker-compose.yaml` file for the following containers architecture:
+Complete the `nginx_flask_mongodb/docker-compose.yaml` file for the following containers architecture:
 
 ![](../.img/docker_nginx-flask-mongo.png)
 
@@ -89,4 +89,6 @@ Create `docker-compose.yaml` file for the following containers architecture:
 - In addition, the flask service and mongo should be connected to a custom bridge network called `private-net-1` network.
 - The nginx should talk with flask using the `flask-app` hostname.
 - The flask service should talk to the mongo using the `mongo` hostname.
+
+Launch the compose project by `docker compose up`.
 
