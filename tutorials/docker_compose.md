@@ -79,7 +79,7 @@ https://docs.docker.com/compose/gettingstarted/
 
 ### :pencil2: Flask, Nginx, MongoDB
 
-Fetch the update repository files by:
+Fetch the updated repository files by:
 
 ```bash
 cd ~/environment/Microservices23
