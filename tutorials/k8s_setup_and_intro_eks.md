@@ -46,9 +46,9 @@ To do so, you have to generate an access token for your AWS user and configure y
 aws iam create-access-key --user-name YOUR_AWS_USERNAME
 ```
 
-Change `YOUR_AWS_USERNAME` to your user. 
+Change `YOUR_AWS_USERNAME` to your user.
 
-3. Click on the "AWS" logo in the left vertical menu. 
+3. Let's configure the generated creds in your IDE environment. Click on the "AWS" logo in the left vertical menu. 
 4. In the opened navigation pane, right-click on the current connection under **Explorer**, and click **Add new connection**.
 5. Choose **Use IAM Credentials**.
 6. Insert your Access Key (this is the `AccessKeyId` field in the generated access token) and click **Enter**.
@@ -112,7 +112,7 @@ kubectl apply -f k8s/k8s-dashboard.yaml
 ```
 
 By default, applications deployed in k8s cluster are not accessible from outside the cluster.
-To access the dashboard app you can use the `kubectl port forward` command.
+To access the dashboard app you can use the `kubectl port-forward` command.
 This is a method used to access and interact with internal resources of the cluster from your local machine:
 
 ```bash
@@ -131,9 +131,52 @@ While `YOUR_INSTANCE_PUBLIC_DNS` is your public DNS name.
 
 In the dashboard authentication page, click **Skip**.
 
-## Kubernetes Intro
+## Deploy applications in the cluster
 
-### Kubernetes API server and the `kubectl` cli
+Let's see Kubernetes cluster in all his glory! 
+
+[Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo) is a microservices demo application, consists of an 11-tier microservices.
+The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them.
+
+Here is the app architecture and description of each microservice:
+
+<img src="../.img/k8s_online-boutique-arch.png" width="80%">
+
+
+| Service                                              | Language      | Description                                                                                                                       |
+| ---------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| frontend                           | Go            | Exposes an HTTP server to serve the website. Does not require signup/login and generates session IDs for all users automatically. |
+| cartservice                     | C#            | Stores the items in the user's shopping cart in Redis and retrieves it.                                                           |
+| productcatalogservice | Go            | Provides the list of products from a JSON file and ability to search products and get individual products.                        |
+| currencyservice             | Node.js       | Converts one money amount to another currency. Uses real values fetched from European Central Bank. It's the highest QPS service. |
+| paymentservice               | Node.js       | Charges the given credit card info (mock) with the given amount and returns a transaction ID.                                     |
+| shippingservice             | Go            | Gives shipping cost estimates based on the shopping cart. Ships items to the given address (mock)                                 |
+| emailservice                   | Python        | Sends users an order confirmation email (mock).                                                                                   |
+| checkoutservice             | Go            | Retrieves user cart, prepares order and orchestrates the payment, shipping and the email notification.                            |
+| recommendationservice | Python        | Recommends other products based on what's given in the cart.                                                                      |
+| adservice                         | Java          | Provides text ads based on given context words.                                                                                   |
+| loadgenerator                 | Python/Locust | Continuously sends requests imitating realistic user shopping flows to the frontend.                                              |
+
+
+To deploy the app in you cluster, perform the below command from the root directory of your shared repo (make sure the YAML file exists): 
+
+```bash 
+kubectl apply -f k8s/online-boutique/release-0.8.0.yaml
+```
+
+By default, applications running within the cluster are not accessible from outside the cluster.
+There are various techniques available to enable external access, we will cover some of them later on.
+
+Using port forwarding allows developers to establish a temporary tunnel for debugging purposes and access applications running inside the cluster from their local machines.
+
+```bash
+kubectl port-forward svc/frontend 8080:80 --address 0.0.0.0
+```
+
+Visit the app.
+
+
+## More information about Kubernetes API server and the `kubectl` cli
 
 The core of Kubernetes' control plane is the **API server**. The API server exposes an HTTP API that lets you communicate with the cluster, and let k8s components communicate with one another.
 
@@ -189,46 +232,3 @@ Let's take a look on your `~/.kube/config`. The three main entries are `users`, 
 - `clusters` defines certain cluster information that you may want to interact with. Each entry under clusters typically includes the cluster name, the cluster's API server URL, and the CA certificate used to verify the authenticity of the cluster's API server certificate.
 - A `context` is used to group access information under a convenient name. Each context has three parameters: `cluster`, `namespace`, and `user`, which basically says: "Use the credentials of the user X to access the Y namespace of the Z cluster".
 
-## Deploy applications in the cluster
-
-Let's see Kubernetes cluster in all his glory! 
-
-[Online Boutique](https://github.com/GoogleCloudPlatform/microservices-demo) is a microservices demo application, consists of an 11-tier microservices.
-The application is a web-based e-commerce app where users can browse items, add them to the cart, and purchase them.
-
-Here is the app architecture and description of each microservice:
-
-<img src="../.img/online-boutique-arch.png" width="80%">
-
-
-| Service                                              | Language      | Description                                                                                                                       |
-| ---------------------------------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| frontend                           | Go            | Exposes an HTTP server to serve the website. Does not require signup/login and generates session IDs for all users automatically. |
-| cartservice                     | C#            | Stores the items in the user's shopping cart in Redis and retrieves it.                                                           |
-| productcatalogservice | Go            | Provides the list of products from a JSON file and ability to search products and get individual products.                        |
-| currencyservice             | Node.js       | Converts one money amount to another currency. Uses real values fetched from European Central Bank. It's the highest QPS service. |
-| paymentservice               | Node.js       | Charges the given credit card info (mock) with the given amount and returns a transaction ID.                                     |
-| shippingservice             | Go            | Gives shipping cost estimates based on the shopping cart. Ships items to the given address (mock)                                 |
-| emailservice                   | Python        | Sends users an order confirmation email (mock).                                                                                   |
-| checkoutservice             | Go            | Retrieves user cart, prepares order and orchestrates the payment, shipping and the email notification.                            |
-| recommendationservice | Python        | Recommends other products based on what's given in the cart.                                                                      |
-| adservice                         | Java          | Provides text ads based on given context words.                                                                                   |
-| loadgenerator                 | Python/Locust | Continuously sends requests imitating realistic user shopping flows to the frontend.                                              |
-
-
-To deploy the app in you cluster, perform the below command from the root directory of your shared repo (make sure the YAML file exists): 
-
-```bash 
-kubectl apply -f k8s/online-boutique/release-0.8.0.yaml
-```
-
-By default, applications running within the cluster are not accessible from outside the cluster.
-There are various techniques available to enable external access, we will cover some of them later on.
-
-Using port forwarding allows developers to establish a temporary tunnel for debugging purposes and access applications running inside the cluster from their local machines.
-
-```bash
-kubectl port-forward svc/frontend 8080:80 --address 0.0.0.0
-```
-
-Visit the app.
