@@ -778,7 +778,7 @@ Create a simple CronJob that runs every 30 seconds and performs a single request
 
 - The client code is already given to you under `k8s/adservice-client`.
 - You have to build the image and push it to a dedicated ECR repo.
-- The image is expected 2 environments variable: `AD_SERVICE_HOST` and `AD_SERVICE_PORT`, which are host and port of the advertising service deployed in your cluster.
+- The image is expected 2 environments variable: `AD_SERVICE_HOST` and `AD_SERVICE_PORT`, which are host and port of the `adservice` service deployed in your cluster.
 - Base your CronJob on the [the example from k8s official docs](https://kubernetes.io/docs/concepts/workloads/controllers/cron-jobs/#example).
 
 [//]: # ()

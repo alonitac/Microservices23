@@ -52,30 +52,6 @@ By Alon Itach
 - Compliance
 - Different service models - IaaS, PaaS, SaaS
 
-
-</textarea></section>
-<section data-markdown  ><textarea data-template>
-
-### About this course
-
-Basic knowledge about the core services: AZs, VPC, Amazon EC2 servers, ELB, AWS Auto Scaling, networking, AWS IAM, and security.
-
-![](media/aws_intro_logo.png)
-
-</textarea></section>
-<section data-markdown  ><textarea data-template>
-
-### The bad old days
-
-- Purchase your own infrastructure (weeks to months to be global)
-- Army of IT employees
-- Dealing with cooling, hardware failure, disaster recovery
-- Dealing with physical security
-- Dealing with real estate
-- Hidden costs (how many servers should I purchase?)
-
-![](media/aws_intro_server1.png)
-
 </textarea></section>
 <section data-markdown  data-auto-animate><textarea data-template>
 
@@ -163,6 +139,62 @@ While each organization experiences a unique journey to the cloud with numerous 
 - [AWS Management Console](https://signin.aws.amazon.com/signin) - a simple and intuitive user interface.
 - [AWS Command Line Interface (CLI)](https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html) - a uniﬁed tool to manage your AWS services from the terminal.
 - [Software Development Kits (SDKs)](https://aws.amazon.com/sdk-for-python/) - using AWS services in your applications tailored to your programming language or platform.
+
+</textarea></section>
+<section data-markdown  ><textarea data-template>
+
+
+### Elastic Cloud Compute (EC2) overview
+
+- Reliable, secure, and almost infinite compute capability
+- Preconfigured templates for your instances, known as Amazon Machine Images (**AMI**s), that package the bits you need for your server (Linux and Windows)
+- Various configurations of CPU, memory, storage, and networking capacity for your instances, known as **instance types**
+- Persistent storage volumes for your data using Amazon Elastic Block Store (Amazon EBS), known as **Amazon EBS** volumes
+- A firewall that enables you to specify the protocols, ports, and source IP ranges that can reach your instances using **security groups**
+- Natively integrated with most of the AWS services
+- Pay-as-you-go [pricing model](https://aws.amazon.com/ec2/pricing/on-demand/)
+
+
+</textarea></section>
+<section data-markdown  ><textarea data-template>
+
+
+### EC2 Storage
+
+Amazon EC2 provides you with flexible and easy-to-use data storage options for your instances.
+
+- **Amazon EBS** provides durable, block-level storage volumes that you can attach to a running instance.
+- **Amazon EFS** provides [scalable file storage](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/AmazonEFS.html) for use with Amazon EC2.
+
+</textarea></section>
+<section data-markdown  ><textarea data-template>
+
+### Virtual Private Cloud (VPC) overview
+
+- With Amazon Virtual Private Cloud (Amazon VPC), you can launch AWS resources in a logically isolated virtual network that you've defined.
+- Virtual Private Cloud (VPC) is the networking layer for EC2 (and related compute services)
+- Very similar to traditional network that you'd operate on prem.
+- Complete control over how you want to configure the networking
+
+  - Custom IP address ranges
+  - NAT/Internet gateways
+  - Firewall, Network Access Control Lists (ACLs)
+  - Multiple public/private subnets
+  - Routing tables
+  - DHCP
+
+- Your AWS account includes a [default VPC](https://docs.aws.amazon.com/vpc/latest/userguide/default-vpc.html) in each AWS Region. Your default VPCs are configured such that you can immediately start launching and connecting to EC2 instances.
+- There's no additional charge for using a VPC. There are charges for [some VPC components](http://aws.amazon.com/vpc/pricing/), such as NAT gateways.
+
+</textarea></section>
+<section data-markdown  ><textarea data-template>
+
+
+### Example
+
+The following diagram shows an example VPC. The VPC has one subnet in each of the Availability Zones in the Region, EC2 instances in each subnet, and an internet gateway to allow communication between the resources in your VPC and the internet.
+
+![](media/vpcexample.png)
 
 </textarea></section>
 <section data-markdown  data-background-color="aquamarine"><textarea data-template>
