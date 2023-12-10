@@ -725,7 +725,7 @@ In this exercise you deploy a [Grafana](https://grafana.com/) server with [Redis
               "apiVersion": 1,
               "datasources": [
                 {
-                  "version":2
+                  "version": 2,
                   "name":"Redis",
                   "type":"redis-datasource",
                   "url":"redis-cart:6379",
