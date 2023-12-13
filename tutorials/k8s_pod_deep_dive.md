@@ -709,6 +709,14 @@ kubectl run -i --tty load-generator --rm --image=busybox:1.28 --restart=Never --
 
 # Exercises 
 
+> [!NOTE]
+> Before starting the exercises make sure the [Metrics Server](https://github.com/kubernetes-sigs/metrics-server#readme) is installed on your cluster.
+> Simple by:
+> ```bash
+> kubectl apply -f https://github.com/kubernetes-sigs/metrics-server/releases/latest/download/components.yaml
+> ```
+
+
 ### :pencil2: Zero downtime during scale
 
 Your goal in this exercise is to achieve zero downtime during scale up/down events of a simple webserver.
