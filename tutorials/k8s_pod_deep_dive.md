@@ -601,6 +601,10 @@ kubectl taint nodes ip-192-168-155-36.us-east-2.compute.internal gpu=true:NoSche
 
 ## Horizontal Pod autoscaling
 
+> [!NOTE]
+> Before starting make sure the [Metrics Server](https://github.com/kubernetes-sigs/metrics-server#readme) is installed on your cluster.
+
+
 A **HorizontalPodAutoscaler** (HPA for short) automatically updates the number of Pods to match demand, usually in a Deployment or StatefulSet.
 
 The HorizontalPodAutoscaler controller periodically (by default every 15 seconds) adjusts the desired scale of its target (for example, a Deployment) to match observed metrics such as average CPU utilization, average memory utilization, or any other custom metric you specify.
@@ -722,7 +726,8 @@ The code can be found in `k8s/zero_downtime_node` (a simple Nodejs webserver).
 4. Increase the webserver's Deployment replicas while watching the `load-generator` pod logs. Did you lose requests for a short moment? Why?
 5. Decrease the number of replicas, lost requests again? Why? 
 6. Define a `liveness` and `readiness` probes in your Deployment. Change the server code in the `/ready` endpoint, and the `SIGTERM` handler to support zero down-time during scale up/down. You may also want to specify the `terminationGracePeriodSeconds` entry for the container.
-7. Test again and make sure you don't lose even a single requests during **scale up and scale down** events.
+8. Create a horizontal pod autoscaler (HPA) for the deployment. Base your HPA on CPU utilization, set the `resources.requests.cpu` and `resources.limits.cpu` entries `300m`. Maximum number of pods to 10.
+7. Generate some load as described in step 3. Let the HPA to increase and decrease the number of pods. Make sure you don't lose even a single requests during **scale up and scale down** events.
 
 **Bonus**: Make sure you are able to perform a rolling update with zero downtime, during traffic load. 
 

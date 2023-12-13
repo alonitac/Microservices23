@@ -10,10 +10,11 @@ let ready = false;
 // --------------------------------------------------- //
 
 app.get('/', (req, res) => {
-  // this setTimeout simulates a request 0.5 second to respond
-  setTimeout(() => {
-   res.send('OK ');
-  }, 500);
+  let x = 0.0001;
+  for (let i = 0; i <= 1000000; i++) {
+    x += Math.sqrt(x);
+  }
+  res.send('OK ');
 });
 
 
