@@ -20,7 +20,11 @@ app.get('/', (req, res) => {
 
 app.get('/ready', (req, res) => {
   // TODO return status code 200 if server is ready (indicated by the `ready` variable), otherwise 503.
-  res.send(200);
+  if (ready === true) {
+   res.send(200);
+  } else {
+   res.send(503);
+  }
 });
 
 app.get('/health', (req, res) => {
