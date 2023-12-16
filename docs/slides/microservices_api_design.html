@@ -1,0 +1,352 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Microservices - API design</title>
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+<link rel="stylesheet" href="dist/theme/white.css" id="theme">
+		<!-- Theme used for syntax highlighted code -->
+<link rel="stylesheet" href="plugin/highlight/zenburn.min.css" id="highlight-theme"></head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+<section data-markdown  ><textarea data-template>
+[comment]: # (mdslides presentation.md --include media)
+
+[comment]: # (The list of themes is at https://revealjs.com/themes/)
+[comment]: # (The list of code themes is at https://highlightjs.org/)
+
+[comment]: # (markdown: { smartypants: true })
+
+
+<style type="text/css">
+  .reveal { 
+    font-size: 2.2em;
+  }
+
+  .reveal .code-wrapper code {
+    white-space: pre;
+    font-size: 2em;
+    line-height: 1.2em;
+  }
+</style>
+
+Microservices23
+
+# Microservices - API design
+
+By Alon Itach
+
+<img src="media/k8s_api_design.png" width="50%">
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API Design
+
+Microservices are communicating with each other by "agreeing" on a well-defined API 
+
+![](media/k8s_ServicePerTeam.png)
+
+Setting up the **contract** between microservices means making sure that different microservices know how to talk to each other and agree on how they'll work together.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API Design
+
+**API design** determine the interface and communication patterns between microservices. 
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API components - Payload Structure 
+
+Specify the structure and schema of the data exchanged between microservices. This may involve defining data models, data validation rules, and data transformation guidelines.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API components - Data Formats
+
+Agree upon the data formats for communication, such as JSON, XML, or Protocol Buffers. Ensure that all participating services can understand and process the specified data formats.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API components -   Versioning
+
+Plan for backward compatibility and versioning of APIs. Establish guidelines on how to introduce changes without breaking existing consumers and how to handle different versions of APIs concurrently.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API components - Error Handling
+
+Define error response formats and error codes that services should use to communicate failures or exceptional conditions. Establish guidelines for handling errors, including retries, circuit breaking, and error propagation strategies.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API components - Security and Authentication
+
+Define the security mechanisms and authentication protocols to be used for securing communication between microservices. This may include protocols like OAuth, JWT, or mutual TLS.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API components - Rate Limiting and Throttling
+
+Specify policies for rate limiting and throttling to control the flow of requests and prevent overload on services. Define the limits and mechanisms to handle exceeded limits.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## RESTful API
+
+RESTful API (Representational State Transfer) is a software architectural style that utilizes a set of principles and constraints to facilitate communication and data exchange between systems over HTTP.
+
+Examples: Amazon S3, Google data API
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## REST API principles 
+
+Statelessness
+
+- Each request from client must contain all the information necessary to understand the request. Client cannot take any advantage of stored context in the server. 
+- Each request is independently of any requests that may have preceded it.
+- Session state is kept entirely on the client 
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## REST API principles 
+
+Statelessness - advantages 
+
+- Improve observability because monitoring systems don't have to look beyond a single request
+- Improve scalability because not having to allocate resources for storage
+- Improve reliability due to easier recovery from server failure 
+
+<br><br>
+But...
+
+- Overloading network load 
+- Statelessness is sometime difficult to achieve
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## REST API principles 
+
+Cachability
+
+- Data within a response to a request must be explicitly on implicitly labeled as cachable or non cachable 
+- If response data is cachable, then the client is able to reuse the data is later, equivalent requests (e.g. pagination).
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## REST API principles 
+
+Uniform interface 
+
+- Resource is uniquely identified in the URI 
+- Request operation is self descriptive (GET, DELETE, etc..) together with request URI 
+- Name doesn't change (otherwise the API is broken)
+
+<br><br>
+
+For example: 
+
+- Retrieve all books: `GET /books`
+- Retrieve a specific book: `GET /books/{bookId}`
+- Create a new book: `POST /books`
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## REST API principles 
+
+Resources have representations 
+ 
+- Representation captures the current state of the resource (e.g. JSON describing an Account object).
+- The representation has schema 
+- You need to model your application as a set of resources
+- Basic CRUD for each resource 
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## REST API benefits 
+
+Using rest you'll benefit:
+
+- Improve portability 
+- Improve scalability 
+- Allow server's components to evolve independently 
+- Allows apps to be more secure, more reliable, scalable
+- Separate user concerns from data storage concerns
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API backward compatibility
+
+One of the challenges of microservices is how to maintain backward compatibility hen evolving and updating the services. 
+
+Backward compatibility means that older versions of the services can still work with newer ones, and vice versa, without breaking the functionality or causing errors. 
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API backward compatibility - Semantic Version
+
+Semantic versioning is a convention for naming and numbering the versions of software components.
+
+https://semver.org/
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API backward compatibility - the Open-Closed Principle
+
+The Open-Closed Principle is a design principle that states that software entities should be open for extension, but closed for modification. 
+
+For example: 
+
+```text [1|4|7]
+GET /user/profile/{id}
+
+# Open for extension, but URI remain unchanged
+GET /user/profile/{id}?newParameter=value
+
+# distinct URI for new support without modifying the existing one
+GET /user/profilev2/{id}
+```
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API backward compatibility - Implement graceful degradation
+
+Providing alternative or fallback options when the normal or expected functionality is not available or not compatible.
+
+For example, the advertising service is down? just don't display ads. 
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API backward compatibility - Use feature toggles
+
+Feature toggles are a mechanism for controlling the visibility and availability of features.
+
+```text [2|5]
+# Current URI
+GET /user/dashboard
+
+# Expose new feature by send some hidden parameter  
+GET /user/dashboard?feature=experimental
+```
+
+By appending `?feature=experimental` to the URI, the experimental feature is toggled on or off at runtime without changing the code or redeploying.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## API backward compatibility - Documenting and testing
+
+Use tools like [Swagger](https://swagger.io/) or [API Blueprint](https://apiblueprint.org/) to create and maintain documentation for your microservices API.
+
+Use tools like [Apache JMeter](https://jmeter.apache.org/) or [SoapUI](https://www.soapui.org/) to verify and validate the behavior, performance, and compatibility of your microservices.
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Composition
+
+Composition patterns are the way microservices are communicate and interact within cluster
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Chained Composition Pattern
+
+One microservice makes a request to another service, and that service, in turn, makes additional calls to other services to fulfill the request.
+
+![](media/k8s_composition_chained.png)
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Aggregate Composition Pattern
+
+One microservice collects data from various services and transforms it according to its own requirements. 
+
+![](media/k8s_composition_agregator.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Proxy Composition Pattern
+
+A single service that acts as a proxy for other services (a.k.a. **Facade**).
+Particularly useful when exposing functionalities to external customers.
+
+![](media/k8s_compisition_proxy.png)
+
+A classic proxy does not contain logic but only wraps a complex interface. 
+
+
+</textarea></section>
+<section data-markdown  data-background-color="aquamarine"><textarea data-template>
+
+# Thanks
+
+References:
+
+- https://www.linkedin.com/advice/1/how-can-you-maintain-backward-compatibility-microservices
+- https://www.swat4net.com/embracing-microservices-composition-patterns/
+- https://medium.com/israeli-tech-radar/microservices-facades-and-everything-in-between-c4898d73ddb2
+- https://www.linkedin.com/advice/0/how-do-you-simplify-microservice-communication
+
+</textarea></section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+Reveal.initialize({
+controls : false,
+markdown : {smartypants: true},
+controls : true,
+keyboard : true,
+hash : false,
+respondToHashChanges : false,
+width : 1500,
+height : 1000,
+				hash: true,
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath ]
+			});
+		</script>
+	</body>
+</html>

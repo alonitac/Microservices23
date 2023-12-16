@@ -1,0 +1,255 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Microservices - Fault tolerance and service resiliency architectures</title>
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+<link rel="stylesheet" href="dist/theme/white.css" id="theme">
+		<!-- Theme used for syntax highlighted code -->
+<link rel="stylesheet" href="plugin/highlight/zenburn.min.css" id="highlight-theme"></head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+<section data-markdown  data-auto-animate><textarea data-template>
+[comment]: # (mdslides presentation.md --include media)
+
+[comment]: # (The list of themes is at https://revealjs.com/themes/)
+[comment]: # (The list of code themes is at https://highlightjs.org/)
+
+[comment]: # (markdown: { smartypants: true })
+
+
+<style type="text/css">
+  .reveal { 
+    font-size: 2.2em;
+  }
+
+  .reveal .code-wrapper code {
+    white-space: pre;
+    font-size: 2em;
+    line-height: 1.2em;
+  }
+</style>
+
+Microservices23
+
+# Microservices - Fault tolerance and service resiliency architectures
+
+By Alon Itach
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Health checks
+
+Sometimes a service can be incapable of handling requests yet still be running.
+For example, it might have ran out of database connections.
+
+![](media/k8s_fault_tolerence_healthcheck.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Health checks
+
+When this occurs, (1) the monitoring system should generate a alert, and (2) traffic should not be routed to the failed service.
+
+![](media/k8s_fault_tolerence_healthcheck2.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Health checks - Implementation details 
+
+A service has an health check API endpoint (e.g. HTTP `/health`) that returns the health of the service. 
+The API endpoint handler performs various checks, such as:
+
+- The status of the connections to the infrastructure services used by the service instance
+- The status of the host, e.g. disk space
+- Application specific logic
+
+
+Someone (the **kubelet** in the case of k8s cluster) should periodically invoke the endpoint to check the health of the service instance.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Service consistency
+
+Each microservice has its own database.
+
+Some business transactions, however, span multiple service so you need a mechanism to implement transactions that span services.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Service consistency - Example
+
+Use-case: Placing an order in the Online Boutique service requires 5 steps
+
+![](media/microservices_fault_tolerene_saga3.png)
+
+
+- Create an order using the **Checkout** service
+- Check product availability and lock the order in the **Product Catalog** service
+- Apply a discount using the **Coupon** service
+- Create a money transaction in the **Payment** service
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Service consistency - Example
+
+In the **monolithic app**, there is a single database in which we can create an **atomic transaction**.
+
+Either all steps occur, or none occur.
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Service consistency - Example
+
+How to implement transactions that span multiple microservices? 
+
+![](media/microservices_fault_tolerene_saga3.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Service consistency - Example
+
+There are 2 approaches: **Process Manager**, **Saga** 
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Service consistency - Example - Process manager
+
+
+![](media/k8s_fault_tolerence_saga2.png)
+
+There is a centralized microservice (the **Checkout** service in our case) that coordinates the business logic according to finite state machine. 
+
+The process manager maintains the state of the sequence (usually using its wn db) and determine the next processing step based on intermediate results.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Service consistency - Example - Process manager
+
+- Easier to understand and debug.
+- The programming model is more complex - developers have to code compensating transactions that explicitly undo changes if local transaction fails.
+- Overtime the process manager service might turn into a monolith.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Service consistency - Example - Saga
+
+A Saga is a distribution of multiple workflows across multiple services, each providing a path of **compensating actions** in the event that any of the steps in the workflow fails.
+
+![](media/k8s_fault_tolerence_saga3.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Service consistency - Example - Saga
+
+- Simple logic - each service has to care its own transaction and compensation actions
+- Sometimes hard to debug 
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Request design - Retry
+
+- **Automatic Retries**: Implement a retry mechanism for failed requests
+- **Exponential Backoff**: Gradually increase the time between retries to prevent overwhelming the system in case of transient failures.
+- **Retry Budget**: Set a limit on the number of retries to avoid infinite loops and excessive resource consumption.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Request design - Timeout
+
+- **Define Timeouts**: Establish well-defined timeouts for each service-to-service interaction.
+- **Graceful Timeout Handling**: Gracefully handle timeouts by providing appropriate responses or fallback mechanisms.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Request design - Circuit Breaker
+
+In microservices, the failure of one service can potentially cascade to other services throughout the application.
+
+<br><br>
+
+How? 
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Request design - Circuit Breaker
+
+When one service synchronously invokes another there is always the possibility that the other service is unavailable.
+
+Precious resources such as threads might be consumed in the caller while waiting for the other service to respond. 
+This might lead to resource exhaustion, which would make the calling service unable to handle other requests.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Request design - Circuit Breaker
+
+The solution: a **Circuit Breaker** mechanism 
+
+A service client should invoke a remote service via a proxy that functions in a similar fashion to an electrical circuit breaker.
+
+When the number of consecutive failures crosses a threshold, the circuit breaker trips, and for the duration of a timeout period all attempts to invoke the remote service will fail immediately.
+
+
+</textarea></section>
+<section data-markdown  data-background-color="aquamarine"><textarea data-template>
+
+# Thanks
+
+References:
+
+- https://microservices.io/patterns/observability/health-check-api.html
+- https://microservices.io/patterns/data/saga.html
+- https://microservices.io/patterns/reliability/circuit-breaker.html
+
+</textarea></section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+Reveal.initialize({
+controls : false,
+markdown : {smartypants: true},
+controls : true,
+keyboard : true,
+hash : false,
+respondToHashChanges : false,
+width : 1500,
+height : 1000,
+				hash: true,
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath ]
+			});
+		</script>
+	</body>
+</html>
