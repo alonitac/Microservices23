@@ -725,9 +725,9 @@ The code can be found in `k8s/zero_downtime_node` (a simple Nodejs webserver).
 
 1. Build the image and push it to a dedicated ECR repo that you'll create.
 2. Deploy the app as a simple `Deployment` (with the corresponding `Service`). The app is listening on port `3000`.
-3. Generate some incoming traffic (200 requests per second) from a dedicated pod: 
+3. Generate some incoming traffic (20 requests per second) from a dedicated pod: 
    ```bash
-   kubectl run -i --tty load-generator --rm --image=busybox:1.28 --restart=Never -- /bin/sh -c "while sleep 0.005; do (wget -q -O- http://SERVICE_URL &); done"
+   kubectl run -i --tty load-generator --rm --image=busybox:1.28 --restart=Never -- /bin/sh -c "while sleep 0.05; do (wget -q -O- http://SERVICE_URL &); done"
    ```
    Chane `SERVICE_URL` accordingly.    
 
