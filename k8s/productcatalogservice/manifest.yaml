@@ -14,17 +14,17 @@ spec:
       terminationGracePeriodSeconds: 5
       containers:
       - name: server
-        image: public.ecr.aws/n5h8m9x0/pc1
+        image: # TODO
         ports:
         - containerPort: 3550
         env:
         - name: MONGODB_URI
           # TODO change <MONGO_PRIMARY_DNS> bellow
-          value: mongodb://mongo-0.mongo-service:27017/?replicaSet=myReplicaSet
+          value: mongodb://<MONGO_PRIMARY_DNS>:27017/?replicaSet=myReplicaSet
         - name: MONGODB_PRODUCTS_DB_NAME
-          value: myddd
+          value: # TODO products db name here
         - name: MONGODB_PRODUCTS_COLLECTION_NAME
-          value: products
+          value: # TODO products collection name here
         - name: PORT
           value: "3550"
         - name: DISABLE_PROFILER
