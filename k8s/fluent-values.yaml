@@ -1,0 +1,37 @@
+configMapConfigs:
+  - fluentd-prometheus-conf
+
+fileConfigs:
+  04_outputs.conf: |-
+    <label @OUTPUT>
+    
+      <filter **>
+        @type parser
+        key_name log
+        format json
+        emit_invalid_record_to_error false
+        suppress_parse_error_log true
+        reserve_data true
+        inject_key_prefix data.
+        time_parse false
+      </filter>
+    
+      <match **>
+        @type relabel
+        @label @ELASTIC
+      </match>   
+    </label>
+        
+    <label @ELASTIC>
+      <match **>
+        @type elasticsearch
+        @log_level debug
+        host "elasticsearch-svc"
+        port 9200
+        logstash_format true
+        logstash_prefix logs 
+        remove_keys data.timestamp
+      </match>
+    </label>
+
+

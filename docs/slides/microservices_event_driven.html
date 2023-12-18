@@ -1,0 +1,350 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>Microservices - Event driven architectures</title>
+		<link rel="stylesheet" href="dist/reset.css">
+		<link rel="stylesheet" href="dist/reveal.css">
+<link rel="stylesheet" href="dist/theme/white.css" id="theme">
+		<!-- Theme used for syntax highlighted code -->
+<link rel="stylesheet" href="plugin/highlight/zenburn.min.css" id="highlight-theme"></head>
+	<body>
+		<div class="reveal">
+			<div class="slides">
+<section data-markdown  data-auto-animate><textarea data-template>
+[comment]: # (mdslides presentation.md --include media)
+
+[comment]: # (The list of themes is at https://revealjs.com/themes/)
+[comment]: # (The list of code themes is at https://highlightjs.org/)
+
+[comment]: # (markdown: { smartypants: true })
+
+
+<style type="text/css">
+  .reveal { 
+    font-size: 2.2em;
+  }
+
+  .reveal .code-wrapper code {
+    white-space: pre;
+    font-size: 2em;
+    line-height: 1.2em;
+  }
+</style>
+
+Microservices23
+
+# Microservices - Event driven architectures
+
+By Alon Itach
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Motivation
+
+Imagine the recommendation service utilizes an ML model. 
+
+![](media/k8s_online_boutique.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Motivation
+
+This service takes in customer **events** (such as adding a product to the cart or visiting a product page) and, using the information from the current and past events, the model deduces which products to suggest.
+
+![](media/k8s_online_boutique.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Motivation
+
+How to implement it? Specifically, how to address the communication between the frontend and the recommendation services?
+
+![](media/k8s_online_boutique2.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Motivation 
+
+The naive approach has **synchronous** nature
+
+The frontend service initiates an HTTP request with the event details. The recommendation service responds with the predicted recommendation.
+
+However, it has some disadvantages in terms of **scalability** and **failure tolerance**.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Motivation 
+
+Here **Message Brokers** (a.k.a queuing systems) come in
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Message brokers introduced
+
+The frontend service **produces** an event (a.k.a. message, or job) to a **queue**, and **returns immediately**
+
+![](media/k8s_online_boutique3.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Message brokers introduced
+
+The recommendation service **consumes** an event from the queue, writes it to an Events Database, and process the ML job.
+
+![](media/k8s_online_boutique3.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Message brokers introduced
+
+This model is called **producers/consumer**
+
+The frontend service(s) are known as producers, as they produce job to the queue.
+
+The recommendation service(s) are known as a **consumers**, as they consume and process jobs, empties the queue.
+
+![](media/k8s_online_boutique3.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Message brokers introduced
+
+This **asynchronous architecture** decouples the communication between the two microservice, allowing the frontend service to respond quickly to user requests without waiting for the recommendation service to process jobs. 
+
+![](media/k8s_online_boutique3.png)
+
+If the job is failed, messages in the queue are not getting lost. 
+The messages will remain in the queue until they are successfully processed by some recommendation "worker". 
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Message brokers 
+
+How can the frontend service get the results of the processed jobs done by the recommendation service? 
+
+![](media/k8s_online_boutique4.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Message brokers 
+
+The frontend can periodically try to fetch the results for a given client-id, or retrieve results as part of the next client request.  
+
+![](media/k8s_online_boutique4.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+
+## Event sourcing 
+
+Usually, services store the "current state" of an entity on a database table
+
+<br>
+
+**Event Sourcing** is a different way of structuring the business logic and persisting.
+It persists an entity as a **sequence of events** and each event represents a state change of the entity.
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Command Query Responsibility Segregation (CQRS)
+
+Motivation: Let's say we want to query a full history of customer's cart content, including info about the product price, and whether the product has been purchased 
+
+A few problems arise here:
+
+- Which microservice is responsible to store the cart history, historical product prices?
+- The query is complex, as it should join data from the cart service, products catalog service and payment service.
+
+We can utilize our Events Queue
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Command Query Responsibility Segregation (CQRS)
+
+We create the cart-history microservice, which defines a **view database** - a read-only DB that is designed to support that query
+
+![](media/k8s_online_boutique6.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Command Query Responsibility Segregation (CQRS)
+
+This pattern is known as CQRS. 
+
+![](media/k8s_online_boutique6.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Command Query Responsibility Segregation (CQRS)
+
+The service consumes messages from the same event queue as the recommendation worker do, but as part of a different **consumer group**.
+
+Consumer group is a set of consumers that cooperate to consume messages from a queue.
+Each message in a queue is delivered to **one** consumer within a consumer group. 
+
+![](media/k8s_online_boutique6.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Command Query Responsibility Segregation (CQRS)
+
+Please be aware that the cart-history service may exhibit latency in reflecting the most up-to-date state. 
+This kind of consistency is known as **Eventual Consistency**, as opposed of **Stringly Consistent**.
+
+![](media/k8s_online_boutique6.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Message brokers - topics
+
+Let's introduce **Topics**
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Motivation 
+
+Assume the recommendation-frontend service is overloaded by dummy requests from the frontend while it waits for some job to be completed 
+
+![](media/k8s_online_boutique4.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Message brokers - topics 
+
+When the recommendation-frontend service receive a completed job, it **publishes** a message to an **topic**.
+
+![](media/k8s_online_boutique5.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Message brokers - topics  
+
+Each frontend instance **subscribes** to this topic during its launch. 
+This subscription enables frontend instances to receive notifications when jobs are completed.
+
+![](media/k8s_online_boutique5.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Message brokers - topics  
+
+This communication pattern is called **pub/sub** 
+
+![](media/k8s_online_boutique5.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Message brokers - topics 
+
+The front end service caches results **locally**. 
+
+![](media/k8s_online_boutique5.png)
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Kafka message broker in a nutshell
+
+Kafka is a distributed messaging system providing fast, highly scalable and redundant messaging through a pub-sub and producer-consumer model. 
+
+![](media/k8s_kafka-logo-wide.png)
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Kafka message broker in a nutshell
+
+The basic architecture of Kafka is organized around a few key terms: **topics**, **producers**, **consumers**, and **brokers**.
+
+<br><br>
+
+All Kafka messages are organized into topics. If you wish to send a message you send it to a specific topic and if you wish to read a message you read it from a specific topic. A consumer pulls messages off of a Kafka topic while producers push messages into a Kafka topic. Lastly, Kafka, as a distributed system, runs in a cluster. Each node in the cluster is called a Kafka broker.
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Anatomy of a Kafka Topic
+
+Kafka topics are divided into a number of partitions
+
+![](media/k8s_log-anatomy.png)
+
+
+</textarea></section>
+<section data-markdown  data-auto-animate><textarea data-template>
+
+## Anatomy of a Kafka Topic
+
+Each partition can be placed on a separate machine to allow for multiple consumers to read from a topic in parallel.
+
+![](media/k8s_consumer-groups.png)
+
+</textarea></section>
+<section data-markdown  data-background-color="aquamarine"><textarea data-template>
+
+# Thanks
+
+References:
+
+- https://microservices.io/patterns/data/cqrs.html
+- https://microservices.io/patterns/data/event-sourcing.html
+- https://sookocheff.com/post/kafka/kafka-in-a-nutshell/
+
+</textarea></section>
+			</div>
+		</div>
+
+		<script src="dist/reveal.js"></script>
+		<script src="plugin/notes/notes.js"></script>
+		<script src="plugin/markdown/markdown.js"></script>
+		<script src="plugin/highlight/highlight.js"></script>
+		<script src="plugin/math/math.js"></script>
+		<script>
+			// More info about initialization & config:
+			// - https://revealjs.com/initialization/
+			// - https://revealjs.com/config/
+Reveal.initialize({
+controls : false,
+markdown : {smartypants: true},
+controls : true,
+keyboard : true,
+hash : false,
+respondToHashChanges : false,
+width : 1500,
+height : 1000,
+				hash: true,
+				// Learn about plugins: https://revealjs.com/plugins/
+				plugins: [ RevealMarkdown, RevealHighlight, RevealNotes, RevealMath ]
+			});
+		</script>
+	</body>
+</html>
