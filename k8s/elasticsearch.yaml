@@ -13,6 +13,14 @@ spec:
      labels:
        app: elasticsearch
    spec:
+     initContainers:
+       - name: permissions-fix
+         image: busybox
+         volumeMounts:
+           - name: elasticsearch-storage
+             mountPath: /usr/share/elasticsearch/data
+         command: [ 'chown' ]
+         args: [ '1000:1000', '/usr/share/elasticsearch/data' ]
      containers:
      - name: elasticsearch
        image: elasticsearch:7.17.16
