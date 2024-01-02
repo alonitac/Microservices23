@@ -1,0 +1,6 @@
+persistence:
+  enabled: true
+  size: 3Gi
+
+env:
+  GF_DASHBOARDS_VERSIONS_TO_KEEP: 10
