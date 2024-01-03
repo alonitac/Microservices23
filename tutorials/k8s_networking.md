@@ -328,3 +328,29 @@ kubectl delete ns client stars management-ui
 
 For more information about using Calico:     
 https://docs.tigera.io/calico/latest/network-policy/get-started/kubernetes-policy/kubernetes-demo
+
+
+
+### :pencil2: Setup HTTPS connections with your ingress controller 
+
+Generate a self-signed certificate and private key with (change values accordingly):
+
+```bash
+openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout KEY_FILE -out CERT_FILE -subj "/CN=YOUR_HOST" -addext "subjectAltName = DNS:YOUR_HOST"
+```
+
+Then create the secret in the cluster via:
+
+```bash
+kubectl create secret tls CERT_NAME --key KEY_FILE --cert CERT_FILE
+```
+
+The resulting secret will be of type `kubernetes.io/tls`.
+
+Inspired by https://raw.githubusercontent.com/kubernetes/website/main/content/en/examples/service/networking/tls-example-ingress.yaml, define your ingress to accept HTTPS requests.
+
+You can force your incoming traffic to use HTTPS by adding the following annotation to the `ingress` object:
+
+```text
+nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
+```
