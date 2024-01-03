@@ -161,7 +161,7 @@ This Ingress routes 5% of the traffic to the canary deployment. Make sure the `h
 - Test your configurations by periodically access the application. 
 
 ```bash
-/bin/sh -c "while sleep 0.05; do (wget -q -O- http://LOAD_BALANCER_DOMAIN &); done"
+/bin/sh -c "while sleep 0.05; do (wget -q -O- http://LOAD_BALANCER_DOMAIN | grep Pod -m 1 &); done"
 ```
 
 **Bonus**: Use [different annotations](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/) to perform a canary deployment which routes users based on a request header `FOO=bar`, instead of specific percentage.
