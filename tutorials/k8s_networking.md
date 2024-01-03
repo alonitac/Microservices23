@@ -125,6 +125,9 @@ If you haven't done it yet, deploy the [2048 game dockerized image](https://hub.
 
 Inspired by the above `Ingress`, expose the 2048 app, so you can play the game using a public URL, without `port-forward`ing.  
 
+Create your subdomain here: 
+https://us-east-1.console.aws.amazon.com/route53/v2/hostedzones?region=eu-north-1#ListRecordSets/Z004139713FBMBE0XTBVJ
+
 ### :pencil2: Canary using Nginx 
 
 You can add [nginx annotations](https://kubernetes.github.io/ingress-nginx/user-guide/nginx-configuration/annotations/) to specific Ingress objects to customize their behavior.
