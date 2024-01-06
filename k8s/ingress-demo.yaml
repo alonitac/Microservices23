@@ -6,7 +6,7 @@ metadata:
   name: online-boutique-ing
 spec:
   rules:
-  - host: # TODO YOUR LB DOMAIN HERE. e.g. www.example.com
+  - host: a1942bf71e5844c189dacd1d871fd019-5f7db123c342ebe5.elb.eu-north-1.amazonaws.com
     http:
       paths:
       - path: /
