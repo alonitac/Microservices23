@@ -29,8 +29,8 @@ Here is a high-level architecture of your service:
 
 The service is composed by 2 microservices: 
 
-1. The `frontend` service which is web UI allows end-users to upload images from their local file system. The app is listening on port `8082`, code can be found in `exam/fronetend`.
-2. The `yolo5` service is a machine learning model (based on the [YoloV5 model](https://github.com/ultralytics/yolov5)) that can detect 80 different objects in natural images. The service is listening on port `8081`, and upon a `POST` request to the `/predict` endpoint, followed by an image, the service responds with a new image containing bounding boxes around the detected objects. App code can be found under `exam/yolo5`
+1. The `frontend` service which is web UI allows end-users to upload images from their local file system. The app is listening on port `8082`, code can be found in `exam/fronetend`. The service expect an environment variable called `YOLO5_URL`, which represents the address of the `yolo5` service (including port number and `http://`).
+2. The `yolo5` service is based on the [YoloV5 model](https://github.com/ultralytics/yolov5) that can detect 80 different objects in natural images. The service is listening on port `8081`, app code can be found under `exam/yolo5`.
 
 Here is an example of what you should see:
 
