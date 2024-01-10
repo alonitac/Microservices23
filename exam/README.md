@@ -15,7 +15,7 @@ In this project you will deploy an Image Object Detection Service in Kubernetes 
 If you want a dashboard access, `port-forward` the dashboard service by:
 
 ```bash
-kubectl port-forward -n kubernetes-dashboard service/kubernetes-dashboard 8081:8081 --addresss 0.0.0.0
+kubectl port-forward -n kubernetes-dashboard service/kubernetes-dashboard 8081:8081 --address 0.0.0.0
 ```
 
 Then open your browser in `http://<could9-env-ec2-instance-public-dns-name>:8081`. 
